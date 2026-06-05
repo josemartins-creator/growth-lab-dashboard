@@ -202,6 +202,85 @@
   }
   .quote-author::before { content: '—'; opacity: .5; }
 
+  /* ── REGION FILTER ── */
+  .region-filter {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .filter-btn {
+    font-size: 13px; font-weight: 700;
+    padding: 7px 18px; border-radius: 100px;
+    border: 2px solid var(--border);
+    background: var(--white); color: var(--text-muted);
+    cursor: pointer; transition: all .2s;
+  }
+  .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .filter-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+  /* ── STATUS PIPELINE ── */
+  .status-pipeline {
+    display: flex; align-items: center; gap: 3px;
+    flex-wrap: wrap; margin-top: 2px;
+  }
+  .pipeline-step {
+    font-size: 10.5px; padding: 3px 9px;
+    border-radius: 100px; white-space: nowrap;
+    border: 2px solid transparent;
+    transition: all .15s;
+  }
+  .pipeline-arrow { color: #D1D5DB; font-size: 10px; flex-shrink: 0; }
+
+  /* ── COMMUNITY TABS ── */
+  .community-tabs {
+    display: flex; gap: 8px; margin-bottom: 20px;
+  }
+  .tab-btn {
+    font-size: 13px; font-weight: 700;
+    padding: 8px 20px; border-radius: 100px;
+    border: 2px solid var(--border);
+    background: var(--white); color: var(--text-muted);
+    cursor: pointer; transition: all .2s;
+  }
+  .tab-btn:hover { border-color: var(--teal); color: #065F46; }
+  .tab-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
+
+  /* ── PAST PROGRAM CARDS ── */
+  .past-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px; margin-bottom: 40px;
+  }
+  .past-card {
+    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow: hidden; transition: transform .2s, box-shadow .2s;
+  }
+  .past-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+  .past-card-accent { height: 5px; background: linear-gradient(90deg, #374151, #6B7280); }
+  .past-card-body { padding: 22px; }
+  .past-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+  .past-card-title { font-size: 17px; font-weight: 800; letter-spacing: -.3px; }
+  .past-stats {
+    display: flex; gap: 12px; margin-bottom: 14px;
+    padding: 12px 14px; background: var(--gray-light); border-radius: var(--radius-sm);
+  }
+  .past-stat { text-align: center; }
+  .past-stat-num { font-size: 22px; font-weight: 900; color: var(--text); letter-spacing: -1px; }
+  .past-stat-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .past-highlights { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .past-highlights li {
+    font-size: 12.5px; color: #374151; line-height: 1.5;
+    padding-left: 16px; position: relative;
+  }
+  .past-highlights li::before {
+    content: '✦'; position: absolute; left: 0;
+    font-size: 8px; color: var(--teal); top: 3px;
+  }
+  .past-format-tag {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+    color: #6B7280; background: #F3F4F6;
+    padding: 2px 8px; border-radius: 100px;
+  }
+
   /* ── SECTION HEADERS ── */
   .section-header {
     display: flex; align-items: flex-start; justify-content: space-between;
@@ -535,13 +614,23 @@
 // ║    pitch-pending | confirm-pending | confirmed | active     ║
 // ╚══════════════════════════════════════════════════════════════╝
 
-// Enterprise card-body status (5 stages in order)
+// Enterprise card-body status (5 stages in order — order matters for pipeline)
 const STATUS_LABELS = {
   "pitching":  "🟣 Pitching to Customer",
   "confirmed": "✅ Customer Confirmed",
   "scoping":   "🔵 Scoping the Program",
   "live":      "🟢 Live",
   "finished":  "⬜ Finished"
+};
+
+const STATUS_ORDER = ["pitching", "confirmed", "scoping", "live", "finished"];
+
+const PIPELINE_COLORS = {
+  "pitching":  { bg: "#F5F3FF", color: "#6D28D9", border: "#C4B5FD" },
+  "confirmed": { bg: "#ECFDF5", color: "#065F46", border: "#6EE7B7" },
+  "scoping":   { bg: "#EEF1FF", color: "#1A3EEC", border: "#A5B4FC" },
+  "live":      { bg: "#DCFCE7", color: "#14532D", border: "#4ADE80" },
+  "finished":  { bg: "#F3F4F6", color: "#374151", border: "#D1D5DB" }
 };
 
 // Enterprise card-footer phase (4 high-level states)
@@ -629,6 +718,43 @@ const COMING_SOON = [
   }
 ];
 
+const PAST_PROGRAMS = [
+  {
+    name: "EMEA Growth Lab",
+    region: "EMEA",
+    icon: "🌍",
+    companies: 45,
+    users: 214,
+    highlights: [
+      "Loop Earplugs increased team adoption by 11%, directly tied to the program's gamified challenges",
+      "Docplanner grew Weekly Learning Users (WLU) by 10% over the program period"
+    ]
+  },
+  {
+    name: "AMER Growth Lab",
+    region: "AMER",
+    icon: "🌎",
+    companies: 32,
+    users: 62,
+    highlights: [
+      "Ran during the Global Agent launch — captured dozens of AI 'aha moments' shared across the community",
+      "Became a key driver of early adoption for Amplitude's AI capabilities among participating teams"
+    ]
+  },
+  {
+    name: "APJ Growth Lab",
+    region: "APJ",
+    icon: "🌏",
+    companies: 85,
+    users: 237,
+    format: "Cohort Community",
+    highlights: [
+      "Participants were so energised they authored and published an article about the Growth Lab experience",
+      "Supported the Global Agent launch by collecting AI adoption milestones and user insights across the cohort"
+    ]
+  }
+];
+
 // ── Program pillars ──
 const PILLARS = [
   { icon: "🎥", label: "Short Videos",   desc: "Under 5 min, step-by-step guidance" },
@@ -662,6 +788,7 @@ const QUOTES = [
       <span class="amp-wordmark">Amplitude</span>
       <span class="divider">|</span>
       <span class="program-tag">Internal Program Dashboard</span>
+      <span class="program-tag" style="background:rgba(0,201,167,.2);border:1px solid rgba(0,201,167,.35);">Digital Customer Experience Team</span>
     </div>
     <h1 class="header-title">Growth Lab<br><span>Program Tracker</span></h1>
     <p class="header-subtitle">Live overview of all Growth Labs — enterprise exclusives, multi-customer programs, and what's coming next.</p>
@@ -679,9 +806,9 @@ const QUOTES = [
     <div class="section-eyebrow">About the Program</div>
     <h2 class="what-title">What is a Growth Lab?</h2>
     <p class="what-body">
-      Growth Lab is a digital education program run on Slack, where we bring multiple companies together in a shared channel —
-      or run exclusively for a single enterprise account. Over a defined period (typically two weeks), participants receive
-      one short video per day, each paired with step-by-step guidance they can follow directly inside Amplitude.
+      Growth Lab is a digital education program run on Slack — meeting Amplitude users where they already spend their time,
+      and building a daily analytics habit through gamified product challenges. Over a defined period (typically two weeks),
+      participants receive one short video per day, each paired with step-by-step guidance they can follow directly inside Amplitude.
       The results are measurable: Growth Lab participants have increased Amplitude usage by ~25–26% during the program,
       with teams reporting new use cases tied to activation, retention, and experimentation.
     </p>
@@ -698,6 +825,7 @@ const QUOTES = [
     </div>
     <span class="section-badge" id="enterpriseBadge"></span>
   </div>
+  <div class="region-filter" id="regionFilter"></div>
   <div class="cards-grid" id="enterpriseCards"></div>
 
   <hr class="section-divider">
@@ -728,9 +856,9 @@ const QUOTES = [
       <div class="cta-title">Got a customer that could benefit from a Growth Lab?</div>
       <div class="cta-sub">DM Jose Martins on Slack and let's discuss how to build one together.</div>
     </div>
-    <a href="https://amplitude.enterprise.slack.com/team/U02BT50P6LD" class="cta-button" target="_blank">
+    <button class="cta-button" onclick="openSlackDM()">
       💬 DM Jose on Slack
-    </a>
+    </button>
   </div>
 
 </main>
@@ -767,10 +895,12 @@ function loadSaved() {
     const savedPhase     = localStorage.getItem('phase_ent_' + i);
     const savedNextSteps = localStorage.getItem('nextsteps_ent_' + i);
     const savedLaunch    = localStorage.getItem('launch_ent_' + i);
+    const savedSponsor   = localStorage.getItem('sponsor_ent_' + i);
     if (savedStatus)             lab.status    = savedStatus;
     if (savedPhase)              lab.phase     = savedPhase;
     if (savedNextSteps !== null) lab.nextSteps = savedNextSteps;
     if (savedLaunch    !== null) lab.launch    = savedLaunch;
+    if (savedSponsor   !== null) lab.sponsor   = savedSponsor;
   });
   const savedBroadStatus = localStorage.getItem('status_broader');
   if (savedBroadStatus) BROADER_LAB.status = savedBroadStatus;
@@ -819,6 +949,11 @@ function savePhase(i, val) {
   localStorage.setItem('phase_ent_' + i, val);
 }
 
+function saveSponsor(i, val) {
+  ENTERPRISE_LABS[i].sponsor = val;
+  localStorage.setItem('sponsor_ent_' + i, val);
+}
+
 // Phase helpers
 function phaseBadge(phase) {
   return `<span class="phase-badge" data-phase="${phase}">${PHASE_LABELS[phase] || phase}</span>`;
@@ -830,6 +965,57 @@ function phaseSelect(phase, index) {
     .join('');
   return `<select class="phase-select" data-phase="${phase}"
     onchange="savePhase(${index}, this.value); this.setAttribute('data-phase', this.value)">${options}</select>`;
+}
+
+// Status pipeline — 3 visual states: done / active / future
+function statusPipeline(currentStatus) {
+  const currentIdx = STATUS_ORDER.indexOf(currentStatus);
+  const steps = STATUS_ORDER.map((s, idx) => {
+    const label = STATUS_LABELS[s].replace(/^\S+\s+/, ''); // strip emoji
+    const c = PIPELINE_COLORS[s];
+    let style, text;
+    if (idx < currentIdx) {
+      // Completed step — strong gray with checkmark
+      style = `background:#E5E7EB;color:#6B7280;border-color:#D1D5DB;font-weight:700;`;
+      text  = `✓ ${label}`;
+    } else if (idx === currentIdx) {
+      // Active step — full brand color, bold
+      style = `background:${c.bg};color:${c.color};border-color:${c.border};font-weight:800;`;
+      text  = label;
+    } else {
+      // Future step — very faded
+      style = `background:#F9FAFB;color:#C4C9D4;border-color:#F3F4F6;font-weight:400;`;
+      text  = label;
+    }
+    return `<span class="pipeline-step" style="${style}">${text}</span>`;
+  });
+  return `<div class="status-pipeline">${steps.join('<span class="pipeline-arrow">›</span>')}</div>`;
+}
+
+// Region filter
+let activeRegion = 'ALL';
+
+function filterRegion(region, btn) {
+  activeRegion = region;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.card-wrapper').forEach(w => {
+    w.style.display = (region === 'ALL' || w.dataset.region === region) ? '' : 'none';
+  });
+}
+
+function renderRegionFilter() {
+  const regions = [
+    { key: 'ALL',  label: 'All Regions' },
+    { key: 'AMER', label: '🌎 AMER' },
+    { key: 'EMEA', label: '🌍 EMEA' },
+    { key: 'LATAM',label: '🌎 LATAM' },
+    { key: 'APJ',  label: '🌏 APJ' }
+  ];
+  document.getElementById('regionFilter').innerHTML = regions.map(r =>
+    `<button class="filter-btn ${activeRegion === r.key ? 'active' : ''}"
+      onclick="filterRegion('${r.key}', this)">${r.label}</button>`
+  ).join('');
 }
 
 function toggleEdit() {
@@ -889,17 +1075,18 @@ function renderEnterprise() {
   document.getElementById('enterpriseBadge').textContent = `${ENTERPRISE_LABS.length} Active`;
   document.getElementById('enterpriseCards').innerHTML = ENTERPRISE_LABS.map((lab, i) => {
     const [c1, c2] = CARD_COLORS[i % CARD_COLORS.length];
-    // Status — dropdown in card body
+    // Status — pipeline in view mode, dropdown in edit mode
     const statusEl = editMode
       ? `<div class="meta-row" style="align-items:center">
            <span class="meta-icon">🔖</span>
            <span class="meta-label">Status</span>
            <span class="meta-value">${statusSelect(lab.status, 'enterprise', i)}</span>
          </div>`
-      : `<div class="meta-row" style="align-items:center">
-           <span class="meta-icon">🔖</span>
-           <span class="meta-label">Status</span>
-           <span class="meta-value">${statusBadge(lab.status)}</span>
+      : `<div style="padding:2px 0">
+           <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:7px;display:flex;align-items:center;gap:5px">
+             <span>🔖</span><span>Status</span>
+           </div>
+           ${statusPipeline(lab.status)}
          </div>`;
 
     // Next Steps — editable textarea
@@ -940,10 +1127,25 @@ function renderEnterprise() {
                <span class="meta-value" style="color:#C4B5FD;font-style:italic">TBC</span>
              </div>`;
 
-    // Phase — editable select in footer
-    const phaseEl = editMode ? phaseSelect(lab.phase, i) : phaseBadge(lab.phase);
+    // Amplitude Sponsor — editable in edit mode
+    const sponsorEl = editMode
+      ? `<div>
+           <div class="notes-edit-label">⭐ Amplitude Sponsor</div>
+           <input type="text" class="notes-textarea" style="min-height:unset;padding:7px 10px;resize:none;"
+             placeholder="Name"
+             value="${lab.sponsor}"
+             onblur="saveSponsor(${i}, this.value)"
+             oninput="saveSponsor(${i}, this.value)"
+           />
+         </div>`
+      : `<div class="meta-row">
+           <span class="meta-icon">⭐</span>
+           <span class="meta-label">Amplitude Sponsor</span>
+           <span class="meta-value">${lab.sponsor}</span>
+         </div>`;
 
     return `
+    <div class="card-wrapper" data-region="${lab.region}">
     <div class="lab-card">
       <div class="card-accent" style="--card-color1:${c1};--card-color2:${c2}"></div>
       <div class="card-body">
@@ -961,56 +1163,93 @@ function renderEnterprise() {
             <span class="meta-value">${lab.startDate}</span>
           </div>
           ${launchEl}
-          <div class="meta-row">
-            <span class="meta-icon">⭐</span>
-            <span class="meta-label">Amplitude Sponsor</span>
-            <span class="meta-value">${lab.sponsor}</span>
-          </div>
+          ${sponsorEl}
           ${statusEl}
           ${nextStepsEl}
         </div>
       </div>
-      <div class="card-footer" style="flex-direction:column;align-items:flex-start;gap:5px;padding:12px 22px;">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);">Phase</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;gap:8px;">
-          ${phaseEl}
-          <div class="sponsor-chip" style="margin-left:auto"><div class="avatar">${getInitials(lab.sponsor)}</div></div>
-        </div>
-      </div>
+    </div>
     </div>`;
   }).join('');
+}
+
+let activeCommunityTab = 'current';
+
+function toggleCommunityTab(tab) {
+  activeCommunityTab = tab;
+  renderBroader();
 }
 
 function renderBroader() {
   const lab = BROADER_LAB;
 
-  document.getElementById('broaderLab').innerHTML = `
-  <div class="broad-card">
-    <div class="broad-accent"></div>
-    <div class="broad-body">
-      <div>
-        <div class="focus-tags" style="margin-bottom:10px">
-          ${lab.focus.map(f => `<span class="focus-tag ${f.toLowerCase()}">${f}</span>`).join('')}
-          ${lab.regions.map(r => `<span class="region-badge region-${r}" style="font-size:11px">${r}</span>`).join('')}
+  const tabBar = `
+    <div class="community-tabs">
+      <button class="tab-btn ${activeCommunityTab === 'current' ? 'active' : ''}"
+        onclick="toggleCommunityTab('current')">🔴 Current Program</button>
+      <button class="tab-btn ${activeCommunityTab === 'past' ? 'active' : ''}"
+        onclick="toggleCommunityTab('past')">📚 Past Programs</button>
+    </div>`;
+
+  if (activeCommunityTab === 'past') {
+    const pastCards = PAST_PROGRAMS.map(p => `
+      <div class="past-card">
+        <div class="past-card-accent"></div>
+        <div class="past-card-body">
+          <div class="past-card-header">
+            <div>
+              <div style="font-size:24px;margin-bottom:6px">${p.icon}</div>
+              <div class="past-card-title">${p.name}</div>
+              ${p.format ? `<span class="past-format-tag">${p.format}</span>` : ''}
+            </div>
+            <div class="region-badge region-${p.region}">${p.region}</div>
+          </div>
+          <div class="past-stats">
+            <div class="past-stat">
+              <div class="past-stat-num">${p.companies}</div>
+              <div class="past-stat-label">Companies</div>
+            </div>
+            <div style="width:1px;background:var(--border)"></div>
+            <div class="past-stat">
+              <div class="past-stat-num">${p.users}</div>
+              <div class="past-stat-label">Users</div>
+            </div>
+          </div>
+          <ul class="past-highlights">
+            ${p.highlights.map(h => `<li>${h}</li>`).join('')}
+          </ul>
         </div>
-        <h3 class="broad-title">${lab.name} <span style="font-weight:500;color:var(--text-muted);font-size:16px">· ${lab.subtitle}</span></h3>
-        <p class="broad-desc">${lab.description}</p>
-        <div class="broad-details">
-          <div class="broad-detail-row">🗓️ <strong>Start Date:</strong>&nbsp; ${lab.startDate}</div>
-          <div class="broad-detail-row">⏱️ <strong>Duration:</strong>&nbsp; ${lab.duration}</div>
-          <div class="broad-detail-row">👥 <strong>Audience:</strong>&nbsp; ${lab.audienceSize}</div>
-          <div class="broad-detail-row">📋 <strong>Notes:</strong>&nbsp; ${lab.notes}</div>
+      </div>`).join('');
+    document.getElementById('broaderLab').innerHTML = tabBar + `<div class="past-grid">${pastCards}</div>`;
+  } else {
+    document.getElementById('broaderLab').innerHTML = tabBar + `
+    <div class="broad-card">
+      <div class="broad-accent"></div>
+      <div class="broad-body">
+        <div>
+          <div class="focus-tags" style="margin-bottom:10px">
+            ${lab.focus.map(f => `<span class="focus-tag ${f.toLowerCase()}">${f}</span>`).join('')}
+            ${lab.regions.map(r => `<span class="region-badge region-${r}" style="font-size:11px">${r}</span>`).join('')}
+          </div>
+          <h3 class="broad-title">${lab.name} <span style="font-weight:500;color:var(--text-muted);font-size:16px">· ${lab.subtitle}</span></h3>
+          <p class="broad-desc">${lab.description}</p>
+          <div class="broad-details">
+            <div class="broad-detail-row">🗓️ <strong>Start Date:</strong>&nbsp; ${lab.startDate}</div>
+            <div class="broad-detail-row">⏱️ <strong>Duration:</strong>&nbsp; ${lab.duration}</div>
+            <div class="broad-detail-row">👥 <strong>Audience:</strong>&nbsp; ${lab.audienceSize}</div>
+            <div class="broad-detail-row">📋 <strong>Notes:</strong>&nbsp; ${lab.notes}</div>
+          </div>
+        </div>
+        <div class="broad-meta">
+          <div class="bm-label">Duration</div>
+          <div class="bm-value" style="font-size:28px;margin-bottom:4px">2</div>
+          <div class="bm-value" style="margin-bottom:16px">weeks</div>
+          <div class="bm-label">Status</div>
+          <div class="bm-value" style="font-size:13px;color:#374151;font-weight:600;line-height:1.4">Deploying Guides</div>
         </div>
       </div>
-      <div class="broad-meta">
-        <div class="bm-label">Duration</div>
-        <div class="bm-value" style="font-size:28px;margin-bottom:4px">2</div>
-        <div class="bm-value" style="margin-bottom:16px">weeks</div>
-        <div class="bm-label">Status</div>
-        <div class="bm-value" style="font-size:13px;color:#374151;font-weight:600;line-height:1.4">Deploying Guides</div>
-      </div>
-    </div>
-  </div>`;
+    </div>`;
+  }
 }
 
 function renderComingSoon() {
@@ -1032,9 +1271,19 @@ function renderAll() {
   renderHeader();
   renderPillars();
   renderQuotes();
+  renderRegionFilter();
   renderEnterprise();
   renderBroader();
   renderComingSoon();
+}
+
+function openSlackDM() {
+  // Opens the Slack desktop app if installed; falls back to web Slack
+  const appUrl = 'slack://user?team=T02LN2P51G5&id=U02BT50P6LD';
+  const webUrl = 'https://amplitude.enterprise.slack.com/team/U02BT50P6LD';
+  // Try app deep link; open web as safety net after short delay
+  window.location.href = appUrl;
+  setTimeout(() => window.open(webUrl, '_blank'), 1500);
 }
 
 // ── Init ──
